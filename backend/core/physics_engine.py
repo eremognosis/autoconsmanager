@@ -49,12 +49,12 @@ class physicsengine:
         a_grav = -(mu)/(r**3 + eps) * pos
         
         
-        coeff = (1.5 * J2 * RE**2)/(r**5)  #### technically scalar so a column mat here
+        coeff = (1.5 *mu* J2 * RE**2)/(r**5)  #### technically scalar so a column mat here
 
         # we need z to be N,1
         
         z = pos[:, 2][:, np.newaxis]
-        z_thing = 5**(z**2)/(r**2)
+        z_thing = 5*(z**2)/(r**2)
         
         
         p_vec = np.empty_like(pos) 
@@ -78,4 +78,14 @@ class physicsengine:
         state = self.state_matrix
         
         
+        
+        k1 = self.calcderiv(state)
+        k2 = self.calcderiv(state + 0.5 * dt * k1)
+        k3 = self.calcderiv(state + 0.5 * dt * k2)
+        k4 = self.calcderiv(state + dt * k3)
         ### we are using Rk4
+        #####
+        ####################
+        
+        self.state_matrix +=   (dt/6.0) * (k1+2*k2+2*k3+k4) 
+        self.cooldowns = np.maximum(0, self.cooldowns-dt)
