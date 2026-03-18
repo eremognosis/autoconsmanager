@@ -106,8 +106,8 @@ class physicsengine:
     def move(self, bigt): 
         ### to reduceb thje erron
         ## we divide in 5 second chunks
-        n = bigt//5
-        rem = bigt -n
+        n = int(bigt//5)   # --> int othwer siw range gives error
+        rem = bigt -(n*5.0)
         for i in range(n):
             self.onestep(5.0)
         self.onestep(rem)
@@ -123,8 +123,8 @@ class physicsengine:
             
             ############for new things
             if oid not in self.idtoind:
-                id = len(self.idtoind)
-                if id >= self.total_objects:
+                idx = len(self.idtoind)
+                if idx >= self.total_objects:
                     continue #### its says constaret
                 
                 self.idtoind[oid] = idx
@@ -157,7 +157,7 @@ class physicsengine:
 
         T = np.cross(N,R)
         
-        return np.column_stack((R,T,N))        
+        return np.column_stack((R,T,N))         ##### apparently i did an error by using just stack earlier
     
     
     def burnrtn(self,i, delvrtn):
